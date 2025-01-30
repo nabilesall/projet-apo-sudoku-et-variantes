@@ -29,15 +29,16 @@ public class Sudoku {
     }
 
     public void importGridFromFile(String filePath) throws FileNotFoundException {
-        Scanner fileScanner = new Scanner(new File(filePath));
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (fileScanner.hasNextInt()) {
-                    grid[i][j] = fileScanner.nextInt();
+        System.out.println("Répertoire courant : " + new File(filePath).getAbsolutePath());
+        try (Scanner fileScanner = new Scanner(new File(filePath))) {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (fileScanner.hasNextInt()) {
+                        grid[i][j] = fileScanner.nextInt();
+                    }
                 }
             }
         }
-        fileScanner.close();
     }
 
     public boolean enterGridManually(String input) {
