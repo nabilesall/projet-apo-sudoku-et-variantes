@@ -14,7 +14,7 @@ public class SudokuResolverMixed {
      */
     public boolean resolveSudoku() {
         // Étape 1 : Réduction (placement unique)
-        SudokuResolverReduction reduction = new SudokuResolverReduction(sudoku);
+        SudokuResolverReduction reduction = new SudokuResolverReduction(sudoku, "sudoku_log.txt");
         boolean solvedWithReduction = reduction.resolveSudoku(sudoku);
 
         if (solvedWithReduction) {
@@ -23,7 +23,7 @@ public class SudokuResolverMixed {
         }
 
         // Étape 2 : Retour sur trace pour les cellules restantes
-        SudokuResolverBT backtracking = new SudokuResolverBT(sudoku);
+        SudokuResolverBT backtracking = new SudokuResolverBT(sudoku, "sudoku_log.txt");
         return backtracking.resolveSudoku(sudoku);
     }
 }

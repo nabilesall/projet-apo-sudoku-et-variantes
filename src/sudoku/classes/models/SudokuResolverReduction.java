@@ -1,20 +1,36 @@
 package sudoku.classes.models;
 
 import java.util.HashSet;
-
+import java.io.FileWriter;
+import java.io.IOException;
 public class SudokuResolverReduction {
 
     private int[][] sudoku;
+    private String logFileName;
 
     // <editor-fold defaultstate="collapsed" desc="CONSTRUCTOR">
     /**
      * Démarre le programme
      * @param sudoku Correspond au sudoku à résoudre
      */
-    public SudokuResolverReduction(int[][] sudoku) {
+    public SudokuResolverReduction(int[][] sudoku, String logFileName) {
         this.sudoku = sudoku;
+        this.logFileName = logFileName;
     }
 
+    /**
+     * Logs the chosen number to the log file.
+     * @param row The row of the chosen number.
+     * @param column The column of the chosen number.
+     * @param number The chosen number.
+     */
+    private void logChoice(int row, int column, int number) {
+        try (FileWriter writer = new FileWriter(logFileName, true)) {
+            writer.write("Chosen number " + number + " at [" + row + "][" + column + "]\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public boolean resolveSudoku(int[][] sudoku) {
         boolean progressMade;
 
@@ -28,8 +44,12 @@ public class SudokuResolverReduction {
 
                         if (possibilities.size() == 1) {
                             // Placement unique
-                            sudoku[row][col] = possibilities.iterator().next();
+                            int chosenNumber = possibilities.iterator().next();
+                            sudoku[row][col] = chosenNumber;
+                            logChoice(row, col, chosenNumber); // Log the choice
+
                             progressMade = true;
+
                         }
                     }
                 }

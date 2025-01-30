@@ -1,16 +1,21 @@
 package sudoku.classes.models;
 
+import java.io.FileWriter;
+import java.io.IOException;
 public class SudokuResolverBT {
 
     private int[][] sudoku;
+    private String logFileName;
     
     // <editor-fold defaultstate="collapsed" desc="CONSTRUCTOR">
     /**
      * Démarre le programme
      * @param sudoku Correspond au sudoku à résoudre
+     * @param logFileName Correspond au nom du fichier de log
      */
-    public SudokuResolverBT(int[][] sudoku) {
+    public SudokuResolverBT(int[][] sudoku, String logFileName) {
         this.sudoku = sudoku;
+        this.logFileName = logFileName;
     }
 
     // </editor-fold>
@@ -110,7 +115,20 @@ public class SudokuResolverBT {
                !hasNumberInBox(sudoku, number, row, column);
         
     }
-    
+    /**
+     * Logs the chosen number to the log file.
+     * @param row The row of the chosen number.
+     * @param column The column of the chosen number.
+     * @param number The chosen number.
+     */
+    private void logChoice(int row, int column, int number) {
+        try (FileWriter writer = new FileWriter(logFileName, true)) {
+            writer.write("Chosen number " + number + " at [" + row + "][" + column + "]\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Résout un sudoku
      * @param sudoku Correspond au sudoku à résoudre
@@ -135,7 +153,8 @@ public class SudokuResolverBT {
                             
                             // La cellule prend la valeur essayée
                             sudoku[row][column] = numberToTry;
-                            
+                            // Log the chosen number
+                            logChoice(row, column, numberToTry);
                             // A partir de ce point là, on considère que la cellule rempli contient la bonne valeur.
                             // Cela aurait pû être un autre numéro, mais tant pis, on considère que ce premier numéro est correct
                             
