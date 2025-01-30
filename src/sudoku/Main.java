@@ -3,7 +3,6 @@ package sudoku;
 import sudoku.classes.models.Sudoku;
 import sudoku.classes.models.SudokuResolver;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
