@@ -1,99 +1,22 @@
-/*
- * Copyright (C) 2022 IUT
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+package sudoku.classes.models;
 
+public class SudokuResolverBT {
 
-/**
- * Cette classe a pour but de résoudre un sudoku
- * @author Joseph BRIGUET
- * @version 1.0
- */
-public class SudokuResolver {
+    private int[][] sudoku;
     
-    // <editor-fold defaultstate="collapsed" desc="MAIN">
+    // <editor-fold defaultstate="collapsed" desc="CONSTRUCTOR">
     /**
      * Démarre le programme
-     * @param args Correspond aux éventuels arguments. "Il n'y en a pas ici"
+     * @param sudoku Correspond au sudoku à résoudre
      */
-    public static void main(String[] args) {
-        
-        // Correspond au sudoku à résoudre
-        int[][] sudoku = {{5, 3, 0, 0, 7, 0, 0, 0, 0},
-                          {6, 0, 0, 1, 9, 5, 0, 0, 0},
-                          {0, 9, 8, 0, 0, 0, 0, 6, 0},
-                          {8, 0, 0, 0, 6, 0, 0, 0, 3},
-                          {4, 0, 0, 8, 0, 3, 0, 0, 1},
-                          {7, 0, 0, 0, 2, 0, 0, 0, 6},
-                          {0, 6, 0, 0, 0, 0, 2, 8, 0},
-                          {0, 0, 0, 4, 1, 9, 0, 0, 5},
-                          {0, 0, 0, 0, 8, 0, 0, 7, 9}};
-        
-        // Affiche le sudoku à résoudre
-        printSudoku(sudoku);
-        
-        // Résout le sudoku et renvoie s'il s'agit d'une réussite ou pas
-        boolean success = resolveSudoku(sudoku);
-        
-        // Affiche un message approprié en fonction du résultat
-        System.out.println(success ? "Solved successfully" : "Unsolvable sudoku");
-        
-        // Affiche le sudoku rempli
-        printSudoku(sudoku);
-        
+    public SudokuResolverBT(int[][] sudoku) {
+        this.sudoku = sudoku;
     }
+
     // </editor-fold>
-    
-    
 
     // <editor-fold defaultstate="collapsed" desc="METHODES STATICS">
-    /**
-     * Affiche un sudoku dans la console
-     * @param sudoku Correspond au sudoku à afficher
-     */
-    private static void printSudoku(int[][] sudoku) {
-        
-        // Parcourt chaque ligne. "row" contient successivement le numéro de chaque ligne
-        for(int row = 0; row < sudoku.length; row++){
-            
-            // A la quatrième ligne du sudoku, insère une ligne horizontale complète
-            if(row % 3 == 0 && row != 0)
-                System.out.println("-----------");
-            
-            // Parcourt chaque colonne. "column" contient successivement le numéro de chaque colonne
-            for(int column = 0; column < sudoku.length; column++){
-                
-                // A la quatrième colonne du sudoku, insère une ligne verticale
-                if(column % 3 == 0 && column != 0)
-                    System.out.print("|");
-                
-                // Si la cellule du sudoku, ne contient aucune valeur, alors affiche un espace vide
-                if(sudoku[row][column] == 0)
-                    System.out.print(" ");
-                
-                // Sinon affiche la valeur de la cellule
-                else
-                    System.out.print(sudoku[row][column]);
-            }
-            
-            // Va à la ligne suivante
-            System.out.println();
-        }
-        
-    }
-    
+
     /**
      * Renvoie si oui ou non le numéro "number" est déjà compris sur la ligne "row" du "sudoku"
      * @param sudoku Correspond au sudoku sur lequel la ligne "row" va être analysée
@@ -193,7 +116,7 @@ public class SudokuResolver {
      * @param sudoku Correspond au sudoku à résoudre
      * @return Retourne true si le sudoku est résolu sinon false. Ou pour chaque boucle récursive, true si le sudoku est en théorie résolvable, sinon false
      */
-    private static boolean resolveSudoku(int[][] sudoku){
+    public boolean resolveSudoku(int[][] sudoku){
         
         // Parcourt chaque ligne. "row" contient successivement le numéro de chaque ligne
         for(int row = 0; row < sudoku.length ; row++){

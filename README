@@ -59,4 +59,8 @@ Le projet est suivi via un dépôt Git. Les branches sont organisées comme suit
 - **feature/** : branches pour chaque fonctionnalité ou tâche spécifique.
 - **docs/** : branche pour la documentation.
 
+
+## Utilisation de l'application
+L'application est concue à être utilisée en interface textuelle et graphique.
+
 ---
