@@ -8,8 +8,8 @@ public class SudokuResolver {
 
     public SudokuResolver(Sudoku sudoku) {
         this.sudoku = sudoku;
-        this.resolverBT = new SudokuResolverBT(sudoku.getGrid());
-        this.resolverReduction = new SudokuResolverReduction(sudoku.getGrid());
+        this.resolverBT = new SudokuResolverBT(sudoku.getGrid(), "sudoku_log.txt");
+        this.resolverReduction = new SudokuResolverReduction(sudoku.getGrid(), "sudoku_log.txt");
         this.resolverMixed = new SudokuResolverMixed(sudoku.getGrid());
     }
 
