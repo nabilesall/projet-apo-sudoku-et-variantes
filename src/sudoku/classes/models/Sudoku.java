@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Sudoku {
-    private final int size;
-    private final int[][] grid;
+    private int size;
+    private int[][] grid;
     private final String symbols;
 
     public Sudoku(int size, String symbols) {
@@ -30,6 +30,21 @@ public class Sudoku {
 
     public void importGridFromFile(String filePath) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(new File(filePath));
+        int count = 0;
+        // compter le nombre de lignes
+        while (fileScanner.hasNextLine()) {
+            fileScanner.nextLine();
+            count++;
+        }
+        fileScanner.close();
+
+        if (count != size || grid[0].length != size) {
+            System.out.println("Erreur : la grille doit être de taille " + size + "x" + size);
+            grid = new int[size][size];
+            throw new IllegalArgumentException("Erreur : la grille doit être de taille " + size + "x" + size);
+        }
+
+        fileScanner = new Scanner(new File(filePath));
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (fileScanner.hasNextInt()) {
@@ -52,7 +67,7 @@ public class Sudoku {
         return true;
     }
 
-    public boolean validateGrid() {
+    public String validateGrid() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 int num = grid[row][col];
@@ -60,13 +75,13 @@ public class Sudoku {
                     grid[row][col] = 0; // Temporarily clear the cell
                     if (!isValidPlacement(row, col, num)) {
                         grid[row][col] = num; // Restore the cell
-                        return false;
+                        return "Erreur : doublon trouvé à la ligne " + (row + 1) + ", colonne " + (col + 1);
                     }
                     grid[row][col] = num; // Restore the cell
                 }
             }
         }
-        return true;
+        return "OK";
     }
 
     private boolean isValidPlacement(int row, int col, int num) {
@@ -83,10 +98,11 @@ public class Sudoku {
             }
         }
         // Check box
-        int boxRowStart = (row / 3) * 3;
-        int boxColStart = (col / 3) * 3;
-        for (int r = boxRowStart; r < boxRowStart + 3; r++) {
-            for (int c = boxColStart; c < boxColStart + 3; c++) {
+        int boxSize = (int) Math.sqrt(size);
+        int boxRowStart = (row / boxSize) * boxSize;
+        int boxColStart = (col / boxSize) * boxSize;
+        for (int r = boxRowStart; r < boxRowStart + boxSize; r++) {
+            for (int c = boxColStart; c < boxColStart + boxSize; c++) {
                 if (grid[r][c] == num) {
                     return false;
                 }
@@ -97,5 +113,16 @@ public class Sudoku {
 
     public int[][] getGrid() {
         return grid;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setGrid() {
+        this.grid = new int[size][size];
+    }
+    public void setSize(int size) {
+        this.size = size;
     }
 }

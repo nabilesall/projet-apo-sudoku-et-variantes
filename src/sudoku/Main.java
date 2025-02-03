@@ -2,8 +2,9 @@ package sudoku;
 
 import sudoku.classes.models.Sudoku;
 import sudoku.classes.models.SudokuResolver;
+import sudoku.classes.fenetre.SudokuPanel;
 
-import java.io.File;
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -12,6 +13,8 @@ public class Main {
     public static void main(String[] args) {
         // Message de bienvenue
         System.out.println("Hello, World!");
+
+        SwingUtilities.invokeLater(SudokuPanel::new);
 
         // Création d'un scanner pour lire l'entrée utilisateur
         Scanner scanner = new Scanner(System.in);
@@ -66,8 +69,10 @@ public class Main {
                 }
 
                 // Validation de la grille
-                if (!sudoku.validateGrid()) {
+                String validationMessage = sudoku.validateGrid();
+                if (!validationMessage.equals("OK")) {
                     System.out.println("Erreur : la grille n'est pas valide ou n'est pas résolvable.");
+                    System.out.println(validationMessage);
                     return;
                 }
 
@@ -93,6 +98,7 @@ public class Main {
             case 2:
                 System.out.println("Vous avez choisi l'interface graphique.");
                 // Code spécifique à l'interface graphique peut être ajouté ici
+//                SwingUtilities.invokeLater(SudokuPanel::new);
                 break;
 
             default:
