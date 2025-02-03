@@ -14,8 +14,6 @@ public class Main {
         // Message de bienvenue
         System.out.println("Hello, World!");
 
-        SwingUtilities.invokeLater(SudokuPanel::new);
-
         // Création d'un scanner pour lire l'entrée utilisateur
         Scanner scanner = new Scanner(System.in);
 
@@ -98,7 +96,7 @@ public class Main {
             case 2:
                 System.out.println("Vous avez choisi l'interface graphique.");
                 // Code spécifique à l'interface graphique peut être ajouté ici
-//                SwingUtilities.invokeLater(SudokuPanel::new);
+                SwingUtilities.invokeLater(SudokuPanel::new);
                 break;
 
             default:
