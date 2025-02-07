@@ -113,7 +113,6 @@ public class SudokuResolverBT {
 
     /**
      * Résout un sudoku
-     * @param sudoku Correspond au sudoku à résoudre
      * @return Retourne true si le sudoku est résolu sinon false. Ou pour chaque boucle récursive, true si le sudoku est en théorie résolvable, sinon false
      */
     public boolean resolveSudoku(){

@@ -55,9 +55,10 @@ public class Sudoku {
         fileScanner.close();
     }
 
-    public boolean enterGridManually(String input) {
+    public boolean enterGridManually(String input) throws IllegalArgumentException {
         if (input.length() != size * size) {
-            return false;
+            throw new IllegalArgumentException("Erreur : la chaîne doit contenir exactement " + size * size + " chiffres.");
+//            return false;
         }
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {

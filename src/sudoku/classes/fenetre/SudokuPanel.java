@@ -14,6 +14,7 @@ public class SudokuPanel {
     private JPanel gridPanel;
     private JPanel menuPanel;
     private JComboBox<String> sizeCombobox;
+    private JLabel statusLabel;
     private Sudoku sudoku;
 
     public SudokuPanel() {
@@ -24,6 +25,11 @@ public class SudokuPanel {
         sizeCombobox = new JComboBox<>(sudokuSizes);
         sizeCombobox.setSelectedItem("4x4");
         sizeCombobox.addActionListener(e -> createEmptyGrid((String) sizeCombobox.getSelectedItem()));
+
+        // Étiquette de statut
+        statusLabel = new JLabel("Prêt", SwingConstants.RIGHT);
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         // Initialisation de la grille de Sudoku (par défaut 9x9)
         sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), "0-9");
@@ -58,8 +64,8 @@ public class SudokuPanel {
         menuPanel.add(solveButton);
         menuPanel.add(resetButton);
         menuPanel.add(uploadButton);
+        menuPanel.add(statusLabel);
 
-        // Ajout des composants au panneau principal
         contentPane.add(controlPanel, BorderLayout.NORTH);
         contentPane.add(gridPanel, BorderLayout.CENTER);
         contentPane.add(menuPanel, BorderLayout.EAST);
@@ -68,7 +74,7 @@ public class SudokuPanel {
         JFrame frame = new JFrame("Résolution de Sudoku");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(contentPane);
-        frame.setSize(800, 600);
+        frame.setSize(1200, 700);
         frame.setVisible(true);
 
         // Créer une grille vide par défaut (9x9)
@@ -119,7 +125,6 @@ public class SudokuPanel {
         gridPanel.add(cell);
     }
 
-
     private void uploadFile(ActionEvent e) {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(null);
@@ -129,9 +134,11 @@ public class SudokuPanel {
             try {
                 sudoku.importGridFromFile(selectedFile.getAbsolutePath());
                 populateGridFromSudoku();
-                JOptionPane.showMessageDialog(null, "Grille chargée avec succès !");
+                setStatusLabel("Grille chargée avec succès !");
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, "Erreur : fichier introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                setStatusLabel("Erreur : fichier introuvable.");
+            } catch (IllegalArgumentException ex) {
+                setStatusLabel(ex.getMessage());
             }
         }
     }
@@ -170,6 +177,7 @@ public class SudokuPanel {
         String validationMessage = sudoku.validateGrid();
         if (!validationMessage.equals("OK")) {
             System.out.println("Erreur : la grille n'est pas valide ou n'est pas résolvable.");
+            setStatusLabel(validationMessage);
             System.out.println(validationMessage);
             return;
         }
@@ -188,17 +196,23 @@ public class SudokuPanel {
 
         if (choice == -1) return; // L'utilisateur a annulé
 
+        setStatusLabel("Résolution en cours...");
         SudokuResolver resolver = new SudokuResolver(sudoku);
         if (resolver.solve(choice + 1)) { // Le choix correspond aux options (1, 2, 3)
             populateGridFromSudoku();
-            JOptionPane.showMessageDialog(null, "Sudoku résolu avec succès !");
+            setStatusLabel("Sudoku résolu avec succès !");
+//            JOptionPane.showMessageDialog(null, "Sudoku résolu avec succès !");
         } else {
-            JOptionPane.showMessageDialog(null, "Impossible de résoudre le Sudoku.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            setStatusLabel("Impossible de résoudre le Sudoku.");
         }
     }
 
     public static void main(String[] args) {
         // Lancement de l'application
         SwingUtilities.invokeLater(SudokuPanel::new);
+    }
+
+    public void setStatusLabel(String message) {
+        statusLabel.setText(message);
     }
 }
