@@ -130,5 +130,4 @@ public class SudokuResolverBT {
         return true;
     }
     // </editor-fold>
-
 }

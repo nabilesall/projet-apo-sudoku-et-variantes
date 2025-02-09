@@ -40,12 +40,16 @@ public enum SudokuSize {
      * @return The size of the Sudoku according to the choice
      */
     public static SudokuSize fromChoice(int choice) {
-        return switch (choice) {
-            case 1 -> SMALL;
-            case 2 -> MEDIUM;
-            case 3 -> LARGE;
-            default -> null;
-        };
+        switch (choice) {
+            case 1:
+                return SMALL;
+            case 2:
+                return MEDIUM;
+            case 3:
+                return LARGE;
+            default:
+                return null;
+        }
     }
 
     /**

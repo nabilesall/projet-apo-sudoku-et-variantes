@@ -54,12 +54,15 @@ public class SudokuTextInterface {
         scanner.nextLine();
 
         switch (choiceGrille) {
-            case 1 -> loadGridFromFile();
-            case 2 -> enterGridManually(size);
-            default -> {
+            case 1:
+                loadGridFromFile();
+                break;
+            case 2:
+                enterGridManually(size);
+                break;
+            default :
                 System.out.println("Choix invalide. Veuillez redémarrer le programme.");
-                return;
-            }
+                break;
         }
 
         // Validate the grid
@@ -157,12 +160,15 @@ public class SudokuTextInterface {
         int choiceSymbols = scanner.nextInt();
         scanner.nextLine();
 
-        return switch (choiceSymbols) {
-            case 1 -> "123456789".substring(0, size);
-            case 2 -> "ABCDEFGHIJKL".substring(0, size);
-//            case 3 -> "🐶🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🐶".substring(0, size);
-            default -> "123456789".substring(0, size);
-        };
+
+        switch (choiceSymbols) {
+            case 1:
+                return "123456789".substring(0, size);
+            case 2:
+                return "ABCDEFGHIJKL".substring(0, size);
+            default:
+                return "123456789".substring(0, size);
+        }
 
     }
     // </editor-fold>

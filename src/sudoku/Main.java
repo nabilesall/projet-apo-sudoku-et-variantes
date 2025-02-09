@@ -33,9 +33,15 @@ public class Main {
         int choiceInterface = scanner.nextInt();
 
         switch (choiceInterface) {
-            case 1 -> new SudokuTextInterface(scanner).start();
-            case 2 -> new SudokuPanel();
-            default -> System.out.println("Choix invalide. Veuillez redémarrer le programme.");
+            case 1:
+                new SudokuTextInterface(scanner).start();
+                break;
+            case 2:
+                new SudokuPanel();
+                break;
+            default:
+                System.out.println("Choix invalide. Veuillez redémarrer le programme.");
+                break;
         }
 
         scanner.close();

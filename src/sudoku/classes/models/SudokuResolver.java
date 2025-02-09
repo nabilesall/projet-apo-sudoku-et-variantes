@@ -34,15 +34,18 @@ public class SudokuResolver {
      */
     public boolean solve(int option) {
         System.out.println("Résolution du Sudoku en cours...");
-        return switch (option) {
-            case 1 -> resolverBT.resolveSudoku();
-            case 2 -> resolverReduction.resolveSudoku();
-            case 3 -> resolverMixed.resolveSudoku();
-            default -> {
+
+        switch (option) {
+            case 1:
+                return resolverBT.resolveSudoku();
+            case 2:
+                return resolverReduction.resolveSudoku();
+            case 3:
+                return resolverMixed.resolveSudoku();
+            default:
                 System.out.println("Option invalide.");
-                yield false;
-            }
-        };
+                return false;
+        }
     }
 
     public void logOperation(String message) {
