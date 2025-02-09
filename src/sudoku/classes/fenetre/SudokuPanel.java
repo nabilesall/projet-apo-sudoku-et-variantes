@@ -8,23 +8,46 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
 
 public class SudokuPanel {
     private JPanel contentPane;
     private JPanel gridPanel;
     private JPanel menuPanel;
     private JComboBox<String> sizeCombobox;
+    private JComboBox<String> symbolsCombobox;
     private JLabel statusLabel;
     private Sudoku sudoku;
+    private Map<Integer, Character> intToSymbol;
+
+    JButton solveButton = new JButton("Résoudre");
+    JButton resetButton = new JButton("Réinitialiser");
+    JButton uploadButton = new JButton("Uploader un fichier");
 
     public SudokuPanel() {
         // Initialisation des tailles de Sudoku
         String[] sudokuSizes = {"4x4", "9x9", "16x16"};
+        String[] sudokuSymbols = {"Chiffres", "Lettres"};
 
-        // Ajout des tailles dans le JComboBox avec "9x9" sélectionné par défaut
+        // Ajout des tailles dans le JComboBox avec "4x4" sélectionné par défaut
         sizeCombobox = new JComboBox<>(sudokuSizes);
         sizeCombobox.setSelectedItem("4x4");
-        sizeCombobox.addActionListener(e -> createEmptyGrid((String) sizeCombobox.getSelectedItem()));
+        sizeCombobox.addActionListener(e -> {
+            createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
+            String symbols = (gridSize((String) sizeCombobox.getSelectedItem()) == 16) ? "123456789ABCDEFG" : symbols((String) symbolsCombobox.getSelectedItem(), gridSize((String) sizeCombobox.getSelectedItem()));
+            sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols);
+        });
+
+        // Ajout des symboles dans le JComboBox avec "Chiffres" sélectionné par défaut
+        symbolsCombobox = new JComboBox<>(sudokuSymbols);
+        symbolsCombobox.setSelectedItem("Chiffres");
+        symbolsCombobox.addActionListener(e -> {
+//            String symbols = (String) symbolsCombobox.getSelectedItem();
+//            sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols.equals("Chiffres") ? "123456789" : "ABCDEFGHIJKL");
+            createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
+            String symbols = (gridSize((String) sizeCombobox.getSelectedItem()) == 16) ? "123456789ABCDEFG" : symbols((String) symbolsCombobox.getSelectedItem(), gridSize((String) sizeCombobox.getSelectedItem()));
+            sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols);
+        });
 
         // Étiquette de statut
         statusLabel = new JLabel("Prêt", SwingConstants.RIGHT);
@@ -32,7 +55,8 @@ public class SudokuPanel {
         statusLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         // Initialisation de la grille de Sudoku (par défaut 9x9)
-        sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), "0-9");
+        String symbols = (gridSize((String) sizeCombobox.getSelectedItem()) == 16) ? "123456789ABCDEFG" : symbols((String) symbolsCombobox.getSelectedItem(), gridSize((String) sizeCombobox.getSelectedItem()));
+        sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols);
 
         // Configuration de l'interface utilisateur
         setupUI();
@@ -46,6 +70,9 @@ public class SudokuPanel {
         controlPanel.add(new JLabel("Taille du Sudoku :"));
         controlPanel.add(sizeCombobox);
 
+        controlPanel.add(new JLabel("Symboles :"));
+        controlPanel.add(symbolsCombobox);
+
         // Panneau de la grille au centre
         gridPanel = new JPanel();
 
@@ -53,13 +80,17 @@ public class SudokuPanel {
         menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
 
-        JButton solveButton = new JButton("Résoudre");
-        JButton resetButton = new JButton("Réinitialiser");
-        JButton uploadButton = new JButton("Uploader un fichier");
-
-        uploadButton.addActionListener(this::uploadFile);
-        resetButton.addActionListener(e -> createEmptyGrid((String) sizeCombobox.getSelectedItem()));
+        uploadButton.addActionListener(e -> uploadFile(e, solveButton));
+        resetButton.addActionListener(e ->
+        {
+            createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
+            sudoku.setGrid();
+            solveButton.setEnabled(false);
+        });
         solveButton.addActionListener(this::solveSudoku);
+
+        // disable solve button if grid is empty
+        solveButton.setEnabled(!sudoku.isEmpty());
 
         menuPanel.add(solveButton);
         menuPanel.add(resetButton);
@@ -78,7 +109,7 @@ public class SudokuPanel {
         frame.setVisible(true);
 
         // Créer une grille vide par défaut (9x9)
-        createEmptyGrid((String) sizeCombobox.getSelectedItem());
+        createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
     }
 
     private int gridSize(String size) {
@@ -90,7 +121,17 @@ public class SudokuPanel {
         };
     }
 
-    private void createEmptyGrid(String size) {
+    private String symbols(String symbols, int size) {
+        System.out.println("Symbols: " + symbols);
+        return switch (symbols) {
+            case "Chiffres" -> "123456789".substring(0, size);
+            case "Lettres" -> "ABCDEFGHIJKL".substring(0, size);
+            default -> "123456789".substring(0, size);
+        };
+    }
+
+    private void createEmptyGrid(String size, JButton solveButton) {
+        solveButton.setEnabled(false);
         gridPanel.removeAll();
 
         int gridSize = gridSize(size);
@@ -125,7 +166,7 @@ public class SudokuPanel {
         gridPanel.add(cell);
     }
 
-    private void uploadFile(ActionEvent e) {
+    private void uploadFile(ActionEvent e, JButton solveButton) {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(null);
 
@@ -135,10 +176,13 @@ public class SudokuPanel {
                 sudoku.importGridFromFile(selectedFile.getAbsolutePath());
                 populateGridFromSudoku();
                 setStatusLabel("Grille chargée avec succès !");
+                solveButton.setEnabled(true);
             } catch (FileNotFoundException ex) {
                 setStatusLabel("Erreur : fichier introuvable.");
+                solveButton.setEnabled(false);
             } catch (IllegalArgumentException ex) {
                 setStatusLabel(ex.getMessage());
+                solveButton.setEnabled(false);
             }
         }
     }
@@ -147,6 +191,8 @@ public class SudokuPanel {
         gridPanel.removeAll();
         int[][] grid = sudoku.getGrid();
         int gridSize = sudoku.getSize();
+
+        Map<Integer, Character> intToSymbol = sudoku.getIntToSymbol();
 
         int boxSize = (int) Math.sqrt(gridSize);  // Détermine la taille des blocs (3 pour 9x9, 2 pour 4x4)
 
@@ -158,8 +204,10 @@ public class SudokuPanel {
                 cell.setHorizontalAlignment(JTextField.CENTER);
 
                 if (grid[row][col] != 0) {
-                    cell.setText(String.valueOf(grid[row][col]));
+                    cell.setText(intToSymbol.get(grid[row][col]).toString());
                     cell.setEditable(false);
+                } else  {
+                    cell.setText("");
                 }
 
                 // Ajout des bordures pour séparer visuellement les blocs

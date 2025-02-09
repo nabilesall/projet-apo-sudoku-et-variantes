@@ -21,7 +21,11 @@ public class SudokuTextInterface {
             System.out.println("Choix invalide. Veuillez redémarrer le programme.");
             return;
         }
-        sudoku = new Sudoku(size, "0-9"); // Initialisation de la grille avec la taille choisie
+
+        // demander les symobols
+        String symbols = (size == 16) ? "123456789ABCDEFG" : chooseSymbols(size);
+
+        sudoku = new Sudoku(size, symbols); // Initialisation de la grille avec la taille choisie
 
         System.out.println("Comment voulez-vous entrer la grille à résoudre ?");
         System.out.println("1. Upload d'un fichier");
@@ -32,7 +36,7 @@ public class SudokuTextInterface {
 
         switch (choiceGrille) {
             case 1 -> loadGridFromFile();
-            case 2 -> enterGridManually();
+            case 2 -> enterGridManually(size);
             default -> {
                 System.out.println("Choix invalide. Veuillez redémarrer le programme.");
                 return;
@@ -59,17 +63,18 @@ public class SudokuTextInterface {
             sudoku.printGrid();
         } catch (FileNotFoundException e) {
             System.out.println("Erreur : fichier introuvable.");
+            throw new IllegalArgumentException("Erreur : fichier introuvable.");
         }
     }
 
-    private void enterGridManually() {
-        System.out.println("Veuillez saisir la grille sous forme d'une seule ligne (81 chiffres, 0 pour les cases vides) :");
+    private void enterGridManually(int size) {
+        System.out.println("Veuillez saisir la grille sous forme d'une seule ligne (" + size + "x" + size + " caractères). 0 pour les cases vides :");
         String sudokuInline = scanner.nextLine();
         try {
             sudoku.enterGridManually(sudokuInline);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return;
+            System.out.println("Erreur au moment d'entrer la grille manuellement : " +e.getMessage());
+            throw new IllegalArgumentException("Erreur au moment d'entrer la grille manuellement : " +e.getMessage());
         }
         System.out.println("Grille saisie avec succès !");
         sudoku.printGrid();
@@ -100,13 +105,30 @@ public class SudokuTextInterface {
         System.out.println("3. 16x16");
 
         int choiceSize = scanner.nextInt();
-        scanner.nextLine(); // Consomme la ligne restante
+        scanner.nextLine();
 
         return switch (choiceSize) {
             case 1 -> 4;
             case 2 -> 9;
             case 3 -> 16;
             default -> -1;
+        };
+    }
+
+    private String chooseSymbols(int size) {
+        System.out.println("Veuillez choisir les symboles du Sudoku :");
+        System.out.println("1. Chiffres");
+        System.out.println("2. Lettres");
+//        System.out.println("3. Emojis");
+
+        int choiceSymbols = scanner.nextInt();
+        scanner.nextLine();
+
+        return switch (choiceSymbols) {
+            case 1 -> "123456789".substring(0, size);
+            case 2 -> "ABCDEFGHIJKL".substring(0, size);
+//            case 3 -> "🐶🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🐶".substring(0, size);
+            default -> "123456789".substring(0, size);
         };
     }
 }

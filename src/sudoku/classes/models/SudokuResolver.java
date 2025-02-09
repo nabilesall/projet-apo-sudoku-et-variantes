@@ -12,6 +12,7 @@ public class SudokuResolver {
     }
 
     public boolean solve(int option) {
+        System.out.println("Résolution du Sudoku en cours...");
         return switch (option) {
             case 1 -> resolverBT.resolveSudoku();
             case 2 -> resolverReduction.resolveSudoku();
