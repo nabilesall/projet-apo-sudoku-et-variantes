@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"sudoku"},{"l":"sudoku.classes.fenetre"},{"l":"sudoku.classes.models"},{"l":"sudoku.enums"}];updateSearchResults();
