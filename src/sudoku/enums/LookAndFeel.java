@@ -1,37 +1,36 @@
-package sudoku;/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package sudoku.enums;
 
 /**
+ * The `LookAndFeel` enum represents the different look and feel of the application.
+ * It contains the different look and feel of the application.
  *
- * @author nabil
+ * @author Idrissa and Marouane
  */
 public enum LookAndFeel {
 
-    //<editor-fold defaultstate="collapsed" desc=" CONSTANTES">
+    //<editor-fold defaultstate="collapsed" desc="CONSTANTS">
     /**
-     * Correspond au Look And Feel "Metal"
+     * Represent the Look And Feel "Metal"
      */
     METAL("Metal"),
 
     /**
-     * Correspond au Look And Feel "Nimbus"
+     * Represent the Look And Feel "Nimbus"
      */
     NIMBUS("Nimbus"),
 
     /**
-     * Correspond au Look And Feel "CDE/Motif"
+     * Represent the Look And Feel "CDE/Motif"
      */
     CDE_MOTIF("CDE/Motif"),
 
     /**
-     * Correspond au Look And Feel "Windows"
+     * Represent the Look And Feel "Windows"
      */
     WINDOWS("Windows"),
 
     /**
-     * Correspond au Look And Feel "Windows Classic"
+     * Represent the Look And Feel "Windows Classic"
      */
     WINDOWS_CLASSIC("Windows Classic");
     //</editor-fold>
@@ -42,7 +41,7 @@ public enum LookAndFeel {
      */
     private final String name;
 
-    //CONSTRUCTEUR
+    //CONSTRUCTORS
     /**
      * Crée un objet look and feel
      * @param name c'est le nom du look
@@ -51,13 +50,10 @@ public enum LookAndFeel {
         this.name = name;
     }
 
-    //METHODE PUBLIQUE
+    // PUBLIC METHODS
     @Override
     public String toString() {
         return this.name;
     }
-
-
-
 
 }

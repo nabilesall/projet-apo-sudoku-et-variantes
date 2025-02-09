@@ -1,20 +1,39 @@
 package sudoku.classes.models;
 
+//<editor-fold defaultstate="collapsed" desc=" IMPORTS">
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+//</editor-fold>
 
+/**
+ * The `Sudoku` class represents a Sudoku puzzle.
+ * It contains the grid, the size of the grid, the symbols used in the grid,
+ * and methods to import the grid from a file,
+ * enter the grid manually, print the grid, validate the grid,
+ * and check if the grid is empty.
+ *
+ * @author Idrissa and Marouane
+ */
 public class Sudoku {
 
+    // <editor-fold defaultstate="collapsed" desc="ATTRIBUTES">
     private int size;
     private int[][] grid;
-    private final String symbols;
+    private String symbols;
     private final char[] symbolsArray;
     private final Map<Character, Integer> symbolToInt;
     private final Map<Integer, Character> intToSymbol;
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="CONSTRUCTORS">
+    /**
+     * Constructor
+     * @param size The size of the grid
+     * @param symbols The symbols used in the grid
+     */
     public Sudoku(int size, String symbols) {
         this.size = size;
         this.symbols = symbols;
@@ -28,9 +47,13 @@ public class Sudoku {
             symbolToInt.put(symbolsArray[i], i + 1);
             intToSymbol.put(i + 1, symbolsArray[i]);
         }
-
     }
+    // </editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="METHODS">
+    /**
+     * Print the grid
+     */
     public void printGrid() {
         int boxSize = (int) Math.sqrt(size);
         for (int row = 0; row < size; row++) {
@@ -47,10 +70,14 @@ public class Sudoku {
         }
     }
 
+    /**
+     * Import the grid from a file
+     * @param filePath The path of the file
+     * @throws FileNotFoundException
+     */
     public void importGridFromFile(String filePath) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(new File(filePath));
         int count = 0;
-        // compter le nombre de lignes
         while (fileScanner.hasNextLine()) {
             fileScanner.nextLine();
             count++;
@@ -75,23 +102,25 @@ public class Sudoku {
                     } else {
                         grid[i][j] = 0;
                     }
-//                    grid[i][j] = value.equals("O") ? 0 : symbolToInt.get(value.charAt(0));
                 }
             }
         }
         fileScanner.close();
     }
 
+    /**
+     * Enter the grid manually
+     * @param input The input string
+     * @throws IllegalArgumentException
+     */
     public void enterGridManually(String input) throws IllegalArgumentException {
         if (input.length() != size * size) {
             throw new IllegalArgumentException("Erreur : la chaîne doit contenir exactement " + size * size + " chiffres.");
-//            return false;
         }
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (!isValidSymbol(String.valueOf(input.charAt(i * size + j))) && input.charAt(i * size + j) != '0') {
                     throw new IllegalArgumentException("Erreur : Symbole invalide '" + input.charAt(i * size + j) + "' détecté.");
-//                    return false;
                 }
                 if(input.charAt(i * size + j) != '0') {
                     grid[i][j] = symbolToInt.get(input.charAt(i * size + j));
@@ -104,11 +133,14 @@ public class Sudoku {
                 } else {
                     grid[i][j] = 0;
                 }
-//                grid[i][j] = input.charAt(i * size + j) - '0';
             }
         }
     }
 
+    /**
+     * Validate the grid
+     * @return The validation message
+     */
     public String validateGrid() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -126,7 +158,10 @@ public class Sudoku {
         return "OK";
     }
 
-
+    /**
+     * Check if the placement of a number is valid
+     * @return True if the placement is valid, false otherwise
+     */
     private boolean isValidPlacement(int row, int col, int num) {
         // Check row
         for (int c = 0; c < size; c++) {
@@ -156,6 +191,10 @@ public class Sudoku {
         return true;
     }
 
+    /**
+     * Check if the symbol is valid
+     * @return True if the symbols are valid, false otherwise
+     */
     private boolean isValidSymbol(String value) {
         for (char symbol : symbolsArray) {
             if (String.valueOf(symbol).equals(value)) {
@@ -165,6 +204,7 @@ public class Sudoku {
         return false;
     }
 
+    // Getters and Setters
     public int[][] getGrid() {
         return grid;
     }
@@ -180,6 +220,10 @@ public class Sudoku {
         this.size = size;
     }
 
+    /**
+     * Check if the grid is empty
+     * @return True if the grid is empty, false otherwise
+     */
     public boolean isEmpty() {
         for (int[] row : grid) {
             for (int cell : row) {
@@ -191,11 +235,12 @@ public class Sudoku {
         return true;
     }
 
-    public Map<Character, Integer> getSymbolToInt() {
-        return symbolToInt;
-    }
-
+    /**
+     * Get the mapping between symbols and integers
+     * @return The symbols
+     */
     public Map<Integer, Character> getIntToSymbol() {
         return this.intToSymbol;
     }
+    //</editor-fold>
 }

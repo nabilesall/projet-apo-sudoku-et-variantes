@@ -1,44 +1,57 @@
 package sudoku.classes.models;
 
+//<editor-fold defaultstate="collapsed" desc=" IMPORTS">
 import sudoku.enums.SudokuSize;
-import sudoku.enums.SudokuSymbols;
 
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+//</editor-fold>
 
+/**
+ * The `SudokuTextInterface` class represents the text interface of the Sudoku.
+ * It contains the methods to interact with the user in the console.
+ * It allows the user to choose the size of the Sudoku, the symbols, the grid to resolve and the resolution method.
+ * It also allows the user to enter the grid manually or to load it from a file.
+ */
 public class SudokuTextInterface {
 
+    // <editor-fold defaultstate="collapsed" desc="ATTRIBUTES">
     private final Scanner scanner;
     private Sudoku sudoku;
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="CONSTRUCTORS">
     public SudokuTextInterface(Scanner scanner) {
         this.scanner = scanner;
     }
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="METHODS">
+    /**
+     * Start the text interface of the Sudoku.
+     */
     public void start() {
         System.out.println("Vous avez choisi l'interface textuelle.");
 
-        // Demander la taille du Sudoku
+        // Ask the user to choose the size of the Sudoku
         SudokuSize selectedSize = chooseGridSize();
         if (selectedSize == null) {
             System.out.println("Choix invalide. Veuillez redémarrer le programme.");
             return;
         }
-        int size = selectedSize.getSize(); // Récupère la taille en int
+        int size = selectedSize.getSize();
 
-        // demander les symobols
+        // Ask the user to choose the symbols of the Sudoku
         String symbols = (size == 16) ? "123456789ABCDEFG" : chooseSymbols(size);
 
-        System.out.println("symbols : " + symbols);
-
-        sudoku = new Sudoku(size, symbols); // Initialisation de la grille avec la taille choisie
+        sudoku = new Sudoku(size, symbols);
 
         System.out.println("Comment voulez-vous entrer la grille à résoudre ?");
         System.out.println("1. Upload d'un fichier");
         System.out.println("2. Saisie en ligne de commande");
 
         int choiceGrille = scanner.nextInt();
-        scanner.nextLine(); // Consomme la ligne restante
+        scanner.nextLine();
 
         switch (choiceGrille) {
             case 1 -> loadGridFromFile();
@@ -49,7 +62,7 @@ public class SudokuTextInterface {
             }
         }
 
-        // Validation de la grille
+        // Validate the grid
         String validationMessage = sudoku.validateGrid();
         if (!validationMessage.equals("OK")) {
             System.out.println("Erreur : la grille n'est pas valide ou n'est pas résolvable.");
@@ -60,11 +73,14 @@ public class SudokuTextInterface {
         solveSudoku();
     }
 
+    /**
+     * Load the grid from a file.
+     */
     private void loadGridFromFile() {
-        System.out.println("Veuillez entrer le chemin du fichier :");
+        System.out.println("Veuillez entrer le chemin du fichier : src/assets/");
         String cheminFichier = scanner.nextLine();
         try {
-            sudoku.importGridFromFile(cheminFichier);
+            sudoku.importGridFromFile("src/assets/"+cheminFichier);
             System.out.println("Grille chargée avec succès !");
             sudoku.printGrid();
         } catch (FileNotFoundException e) {
@@ -73,6 +89,10 @@ public class SudokuTextInterface {
         }
     }
 
+    /**
+     * Enter the grid manually.
+     * @param size The size of the grid
+     */
     private void enterGridManually(int size) {
         System.out.println("Veuillez saisir la grille sous forme d'une seule ligne (" + size + "x" + size + " caractères). 0 pour les cases vides :");
         String sudokuInline = scanner.nextLine();
@@ -86,6 +106,9 @@ public class SudokuTextInterface {
         sudoku.printGrid();
     }
 
+    /**
+     * Solve the Sudoku.
+     */
     private void solveSudoku() {
         SudokuResolver resolver = new SudokuResolver(sudoku);
 
@@ -104,6 +127,10 @@ public class SudokuTextInterface {
         sudoku.printGrid();
     }
 
+    /**
+     * Choose the size of the Sudoku.
+     * @return The size of the Sudoku
+     */
     private SudokuSize chooseGridSize() {
         System.out.println("Veuillez choisir la taille du Sudoku :");
         for (SudokuSize size : SudokuSize.values()) {
@@ -116,6 +143,11 @@ public class SudokuTextInterface {
         return SudokuSize.fromChoice(choiceSize);
     }
 
+    /**
+     * Choose the symbols of the Sudoku.
+     * @param size The size of the Sudoku
+     * @return The symbols of the Sudoku
+     */
     private String chooseSymbols(int size) {
         System.out.println("Veuillez choisir les symboles du Sudoku :");
         System.out.println("1. Chiffres");
@@ -132,6 +164,6 @@ public class SudokuTextInterface {
             default -> "123456789".substring(0, size);
         };
 
-
     }
+    // </editor-fold>
 }

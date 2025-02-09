@@ -1,5 +1,6 @@
 package sudoku.classes.fenetre;
 
+//<editor-fold defaultstate="collapsed" desc=" IMPORTS">
 import sudoku.classes.models.Sudoku;
 import sudoku.classes.models.SudokuResolver;
 import sudoku.enums.SudokuSize;
@@ -11,75 +12,138 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
+//</editor-fold>
 
+/**
+ * The `SudokuPanel` class represents the main panel for the Sudoku application.
+ * It handles the user interface components and interactions for creating, solving,
+ * and resetting Sudoku grids.
+ *
+ * @author Idrissa and Marouane
+ */
 public class SudokuPanel {
+
+    // <editor-fold defaultstate="collapsed" desc="ATTRIBUTES">
+    /**
+     * The main content pane for the Sudoku application.
+     */
     private JPanel contentPane;
+
+    /**
+     * The panel for displaying the Sudoku grid.
+     */
     private JPanel gridPanel;
+
+    /**
+     * The panel for displaying the menu options.
+     */
     private JPanel menuPanel;
+
+    /**
+     * The combo box for selecting the Sudoku size.
+     */
     private JComboBox<String> sizeCombobox;
+
+    /**
+     * The combo box for selecting the Sudoku symbols.
+     */
     private JComboBox<String> symbolsCombobox;
+
+    /**
+     * The label for displaying the status message.
+     */
     private JLabel statusLabel;
+
+    /**
+     * The Sudoku model for the application.
+     */
     private Sudoku sudoku;
+
+    /**
+     * The mapping of integers to symbols for the Sudoku grid.
+     */
     private Map<Integer, Character> intToSymbol;
 
+    /**
+     * The buttons for solving, resetting, and uploading a Sudoku grid.
+     */
     JButton solveButton = new JButton("Résoudre");
-    JButton resetButton = new JButton("Réinitialiser");
-    JButton uploadButton = new JButton("Uploader un fichier");
 
+    /**
+     * The buttons for resetting the Sudoku grid.
+     */
+    JButton resetButton = new JButton("Réinitialiser");
+
+    /**
+     * The buttons for uploading a Sudoku grid from a file.
+     */
+    JButton uploadButton = new JButton("Téléverser un fichier");
+
+    //</editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="CONSTRUCTORS">
+    /**
+     * Creates a new `SudokuPanel` instance with the default Sudoku size and symbols.
+     */
     public SudokuPanel() {
 
         sizeCombobox = new JComboBox<>();
         for (SudokuSize size : SudokuSize.values()) {
             sizeCombobox.addItem(size.getLabel());
         }
-        sizeCombobox.setSelectedItem(SudokuSize.SMALL.getLabel()); // 9x9 par défaut
+        sizeCombobox.setSelectedItem(SudokuSize.SMALL.getLabel());
 
         sizeCombobox.addActionListener(e -> {
             createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
             SudokuSize selectedSize = SudokuSize.fromLabel((String) sizeCombobox.getSelectedItem());
             String symbols = (selectedSize == SudokuSize.LARGE)
                     ? SudokuSymbols.HEXADECIMAL.getSymbols(selectedSize.getSize())
-                    : SudokuSymbols.fromLabel((String) symbolsCombobox.getSelectedItem()).getSymbols(selectedSize.getSize());
+                    : symbols((String) symbolsCombobox.getSelectedItem(), selectedSize.getSize());
             sudoku = new Sudoku(selectedSize.getSize(), symbols);
         });
 
+        // The combo box for selecting the Sudoku symbols
         symbolsCombobox = new JComboBox<>();
         for (SudokuSymbols symbolSet : SudokuSymbols.values()) {
-            // pas d'affichage de Hexadécimal
             if (symbolSet.getLabel().equals("Hexadécimal")) continue;
             symbolsCombobox.addItem(symbolSet.getLabel());
         }
-        symbolsCombobox.setSelectedItem(SudokuSymbols.DIGITS.getLabel()); // Chiffres par défaut
-
+        symbolsCombobox.setSelectedItem(SudokuSymbols.DIGITS.getLabel());
         symbolsCombobox.addActionListener(e -> {
             createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
             SudokuSize selectedSize = SudokuSize.fromLabel((String) sizeCombobox.getSelectedItem());
             String symbols = (selectedSize == SudokuSize.LARGE)
                     ? SudokuSymbols.HEXADECIMAL.getSymbols(selectedSize.getSize())
-                    : SudokuSymbols.fromLabel((String) symbolsCombobox.getSelectedItem()).getSymbols(selectedSize.getSize());
+                    : symbols((String) symbolsCombobox.getSelectedItem(), selectedSize.getSize());
             sudoku = new Sudoku(selectedSize.getSize(), symbols);
         });
 
-        // Étiquette de statut
+        // The label for displaying the status message
         statusLabel = new JLabel("Prêt", SwingConstants.RIGHT);
         statusLabel.setFont(new Font("Arial", Font.BOLD, 12));
         statusLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        // Initialisation de la grille de Sudoku (par défaut 9x9)
+        // Create a new Sudoku instance with the default size and symbols
         SudokuSize selectedSize = SudokuSize.fromLabel((String) sizeCombobox.getSelectedItem());
         String symbols = (selectedSize == SudokuSize.LARGE)
                 ? SudokuSymbols.HEXADECIMAL.getSymbols(selectedSize.getSize())
-                : SudokuSymbols.fromLabel((String) symbolsCombobox.getSelectedItem()).getSymbols(selectedSize.getSize());
+                : symbols((String) symbolsCombobox.getSelectedItem(), selectedSize.getSize());
         sudoku = new Sudoku(selectedSize.getSize(), symbols);
 
-        // Configuration de l'interface utilisateur
+        // Set up the user interface components
         setupUI();
     }
 
+    //</editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="METHODES">
+    /**
+     * Sets up the user interface components for the Sudoku application.
+     */
     private void setupUI() {
         contentPane = new JPanel(new BorderLayout());
 
-        // Panneau de contrôle en haut
+        // Control panel at the top
         JPanel controlPanel = new JPanel();
         controlPanel.add(new JLabel("Taille du Sudoku :"));
         controlPanel.add(sizeCombobox);
@@ -87,11 +151,12 @@ public class SudokuPanel {
         controlPanel.add(new JLabel("Symboles :"));
         controlPanel.add(symbolsCombobox);
 
-        // Panneau de la grille au centre
+        // Grid panel in the center
         gridPanel = new JPanel();
 
-        // Panneau de menu à droite
+        // Menu panel on the right
         menuPanel = new JPanel();
+        menuPanel.setPreferredSize(new Dimension(500, 0));
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
 
         uploadButton.addActionListener(e -> uploadFile(e, solveButton));
@@ -115,26 +180,45 @@ public class SudokuPanel {
         contentPane.add(gridPanel, BorderLayout.CENTER);
         contentPane.add(menuPanel, BorderLayout.EAST);
 
-        // Création d'un JFrame pour afficher le JPanel
+        // Create the main frame
         JFrame frame = new JFrame("Résolution de Sudoku");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(contentPane);
-        frame.setSize(1200, 700);
-        frame.setVisible(true);
 
-        // Créer une grille vide par défaut (9x9)
+        frame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
     }
 
+    /**
+     * Returns the size of the Sudoku grid based on the selected label.
+     *
+     * @param sizeLabel the label for the Sudoku size
+     * @return the size of the Sudoku grid
+     */
     private int gridSize(String sizeLabel) {
         return SudokuSize.fromLabel(sizeLabel).getSize();
     }
 
+    /**
+     * Returns the symbols for the Sudoku grid based on the selected label and size.
+     *
+     * @param label the label for the Sudoku symbols
+     * @param size the size of the Sudoku grid
+     * @return the symbols for the Sudoku grid
+     */
     private String symbols(String label, int size) {
         return SudokuSymbols.fromLabel(label).getSymbols(size);
     }
 
-
+    /**
+     * Creates an empty Sudoku grid based on the selected size and symbols.
+     *
+     * @param size the label for the Sudoku size
+     * @param solveButton the button for solving the Sudoku grid
+     */
     private void createEmptyGrid(String size, JButton solveButton) {
         solveButton.setEnabled(false);
         gridPanel.removeAll();
@@ -160,6 +244,15 @@ public class SudokuPanel {
         gridPanel.repaint();
     }
 
+    /**
+     * Draws a line to separate the Sudoku grid cells visually.
+     *
+     * @param gridSize the size of the Sudoku grid
+     * @param boxSize the size of the Sudoku grid box
+     * @param row the row index of the grid cell
+     * @param col the column index of the grid cell
+     * @param cell the text field for the grid cell
+     */
     private void drawLine(int gridSize, int boxSize, int row, int col, JTextField cell) {
         int top = (row % boxSize == 0) ? 3 : 1;
         int left = (col % boxSize == 0) ? 3 : 1;
@@ -171,8 +264,19 @@ public class SudokuPanel {
         gridPanel.add(cell);
     }
 
+    /**
+     * Uploads a Sudoku grid from a file selected by the user.
+     *
+     * @param e the action event for uploading a file
+     * @param solveButton the button for solving the Sudoku grid
+     */
     private void uploadFile(ActionEvent e, JButton solveButton) {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Choisir un fichier de grille Sudoku");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Fichiers texte", "txt"));
+        fileChooser.setPreferredSize(new Dimension(800, 600));
+        // open the actual pwd + /src/assets
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir") + "/src/assets"));
         int result = fileChooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -192,6 +296,9 @@ public class SudokuPanel {
         }
     }
 
+    /**
+     * Populates the Sudoku grid with the values from the Sudoku model.
+     */
     private void populateGridFromSudoku() {
         gridPanel.removeAll();
         int[][] grid = sudoku.getGrid();
@@ -199,7 +306,7 @@ public class SudokuPanel {
 
         Map<Integer, Character> intToSymbol = sudoku.getIntToSymbol();
 
-        int boxSize = (int) Math.sqrt(gridSize);  // Détermine la taille des blocs (3 pour 9x9, 2 pour 4x4)
+        int boxSize = (int) Math.sqrt(gridSize);  // Determines the size of the box (3 for 9x9, 2 for 4x4)
 
         gridPanel.setLayout(new GridLayout(gridSize, gridSize));
 
@@ -215,7 +322,7 @@ public class SudokuPanel {
                     cell.setText("");
                 }
 
-                // Ajout des bordures pour séparer visuellement les blocs
+                // Add borders to visually separate the blocks
                 drawLine(gridSize, boxSize, row, col, cell);
             }
         }
@@ -224,7 +331,11 @@ public class SudokuPanel {
         gridPanel.repaint();
     }
 
-
+    /**
+     * Solves the Sudoku grid using the selected method.
+     *
+     * @param e the action event for solving the Sudoku grid
+     */
     private void solveSudoku(ActionEvent e) {
         // Validation de la grille
         String validationMessage = sudoku.validateGrid();
@@ -260,12 +371,14 @@ public class SudokuPanel {
         }
     }
 
-    public static void main(String[] args) {
-        // Lancement de l'application
-        SwingUtilities.invokeLater(SudokuPanel::new);
-    }
-
+    /**
+     * Sets the status message for the Sudoku application.
+     *
+     * @param message the status message to display
+     */
     public void setStatusLabel(String message) {
         statusLabel.setText(message);
     }
+
+    //</editor-fold>
 }

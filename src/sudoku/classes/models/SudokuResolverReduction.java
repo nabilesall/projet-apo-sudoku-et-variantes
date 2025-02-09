@@ -1,20 +1,38 @@
 package sudoku.classes.models;
 
+//<editor-fold defaultstate="collapsed" desc=" IMPORTS">
 import java.util.HashSet;
+//</editor-fold>
 
+/**
+ * The `SudokuResolverReduction` class represents a Sudoku resolver using reduction.
+ * It contains the reduction algorithm to resolve the Sudoku.
+ *
+ * @author Idrissa and Marouane
+ */
 public class SudokuResolverReduction {
 
-    private int[][] sudoku;
+    // <editor-fold defaultstate="collapsed" desc="ATTRIBUTES">
+    private final int[][] sudoku;
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="CONSTRUCTOR">
     /**
-     * Démarre le programme
-     * @param sudoku Correspond au sudoku à résoudre
+     * Constructor
+     * @param sudoku The Sudoku to resolve
      */
     public SudokuResolverReduction(int[][] sudoku) {
         this.sudoku = sudoku;
     }
 
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="METHODES">
+
+    /**
+     * Resolve the Sudoku
+     * @return True if the Sudoku is solved, false otherwise
+     */
     public boolean resolveSudoku() {
         boolean progressMade;
         int size = this.sudoku.length;
@@ -41,6 +59,17 @@ public class SudokuResolverReduction {
         return isSudokuSolved(sudoku);
     }
 
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="METHODES STATICS">
+
+    /**
+     * Returns the possibilities for the cell [row][col] of the "sudoku"
+     * @param sudoku Corresponds to the sudoku on which the cell [row][col] will be analyzed
+     * @param row Corresponds to the row number of the "sudoku" to be analyzed
+     * @param col Corresponds to the column number of the "sudoku" to be analyzed
+     * @return Returns the possibilities for the cell [row][col] of the "sudoku"
+     */
     private static HashSet<Integer> getPossibilities(int[][] sudoku, int row, int col) {
         HashSet<Integer> possibilities = new HashSet<>();
         int size = sudoku.length;
@@ -49,18 +78,18 @@ public class SudokuResolverReduction {
             possibilities.add(i);
         }
 
-        // Eliminer les chiffres de la ligne
+        // Eliminate numbers from the row
         for (int c = 0; c < size; c++) {
             possibilities.remove(sudoku[row][c]);
         }
 
-        // Eliminer les chiffres de la colonne
+        // Eliminate numbers from the column
         for (int r = 0; r < size; r++) {
             possibilities.remove(sudoku[r][col]);
         }
 
         int boxSize = (int) Math.sqrt(sudoku.length);
-        // Eliminer les chiffres de la boîte size x size
+        // Eliminate numbers from the box
         int boxRowStart = (row / boxSize) * boxSize;
         int boxColStart = (col / boxSize) * boxSize;
         for (int r = boxRowStart; r < boxRowStart + boxSize; r++) {
@@ -72,6 +101,11 @@ public class SudokuResolverReduction {
         return possibilities;
     }
 
+    /**
+     * Returns whether or not the Sudoku is solved
+     * @param sudoku Corresponds to the sudoku to be analyzed
+     * @return Returns true if the Sudoku is solved, false otherwise
+     */
     private static boolean isSudokuSolved(int[][] sudoku) {
         int size = sudoku.length;
         for (int row = 0; row < size; row++) {
@@ -83,4 +117,6 @@ public class SudokuResolverReduction {
         }
         return true;
     }
+
+    // </editor-fold>
 }
