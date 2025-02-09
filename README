@@ -1,32 +1,8 @@
 # Projet APO - Sudoku (et variantes) : résolution et génération
 
-Ce projet a pour objectif de concevoir et développer une application Java permettant de résoudre des grilles de Sudoku et de générer des grilles aléatoires. L'application doit être capable de résoudre des grilles de Sudoku classiques, mais aussi des variantes telles que le Sudoku Killer, le Sudoku X, le Sudoku Hyper, etc.
-
-# Méthodologie
-Nous avons choisi de suivre une méthodologie de développement agile. Le projet est divisé en deux grande phases:
-- **Phase 1 : Conception et modélisation**
-- **Phase 2 : Développement et tests**
-
-## Phase 1 : Conception et modélisation
-Cette phase consiste à analyser le sujet, à étudier les algorithmes de résolution et à concevoir l'architecture de l'application. Elle est divisée en plusieurs étapes :
-1. Analyse et étude du sujet
-2. Recherche sur les algorithmes de résolution
-3. Conception des diagrammes UML
-4. Définition de la structure des packages
-
-## Phase 2 : Développement et tests
-Cette phase consiste à implémenter les algorithmes de résolution et de génération, à développer l'interface graphique et à tester l'application. Elle est divisée en plusieurs étapes :
-1. Implémentation des règles de déduction
-2. Implémentation de l'algorithme de retour sur trace
-3. Développement de l’algorithme de génération
-4. Tests unitaires des méthodes principales
-5. Ajout d'une interface graphique (MVC)
-6. Implémentation de la sauvegarde et rechargement
-7. Optimisation et gestion des exceptions
-8. Génération de la javadoc
-9. Rédaction du rapport final
-10. Revue finale du code
-
+Ce projet consiste à réaliser une application permettant de résoudre des grilles de sudoku et de générer des grilles de sudoku.
+L'application permet de résoudre des grilles de sudoku de taille 4x4, 9x9, et 16x16.
+Elle est disponible en interface textuelle et graphique.
 
 ## Membres de l'équipe
 | Nom             | Rôle principal                  |
@@ -34,37 +10,11 @@ Cette phase consiste à implémenter les algorithmes de résolution et de géné
 | **BOUZZIDA Marouane**    | Concepteur et gestionnaire de projet |
 | **SALL Idrissa**    | Développeur principal           |
 
-## Répartition des tâches
-
-| **Tâche**                                            | **Responsable principal** | **Période prévue**       | **Statut**          |
-|------------------------------------------------------|---------------------------|--------------------------|---------------------|
-| Analyse et étude du sujet                            | Membre 1                  | Semaine 1                | En cours / Terminé  |
-| Recherche sur les algorithmes de résolution          | Membre 2                  | Semaine 1                | En cours / Terminé  |
-| Conception des diagrammes UML                        | Membre 1                  | Semaine 2                | En cours / Terminé  |
-| Définition de la structure des packages              | Membre 1                  | Semaine 2                | En cours / Terminé  |
-| Implémentation des règles de déduction               | Membre 2                  | Semaine 3                | En cours / Terminé  |
-| Implémentation de l'algorithme de retour sur trace   | Membre 2                  | Semaine 4                | En cours / Terminé  |
-| Développement de l’algorithme de génération          | Collaboration             | Semaine 4                | En cours / Terminé  |
-| Tests unitaires des méthodes principales             | Collaboration             | Semaine 5                | En cours / Terminé  |
-| Ajout d'une interface graphique (MVC)               | Collaboration             | Semaine 5                | En cours / Terminé  |
-| Implémentation de la sauvegarde et rechargement      | Membre 1                  | Semaine 5                | En cours / Terminé  |
-| Optimisation et gestion des exceptions               | Membre 2                  | Semaine 6                | En cours / Terminé  |
-| Génération de la javadoc                             | Membre 1                  | Semaine 7                | En cours / Terminé  |
-| Rédaction du rapport final                           | Membre 1                  | Semaine 7                | En cours / Terminé  |
-| Revue finale du code                                 | Membre 2                  | Semaine 7                | En cours / Terminé  |
-
-## Suivi de version
-Le projet est suivi via un dépôt Git. Les branches sont organisées comme suit :
-- **main** : version stable du projet.
-- **feature/** : branches pour chaque fonctionnalité ou tâche spécifique.
-- **docs/** : branche pour la documentation.
-
-
 ## Utilisation de l'application
 L'application est concue à être utilisée en interface textuelle et graphique.
+Pour lancer l'application il suffit de lancer la classe `Main` qui se trouve dans le package `sudoku`.
+Ensuite, vous pouvez choisir entre l'interface textuelle ou graphique.
 
----
-
-
-AB0C00BA00CB0000
-530070000600195000098000060800060003400803001700020006060000280000419005000080079
+## Sudoku (test) en ligne de commande
+4x4 : AB0C00BA00CB0000
+9x9 : 530070000600195000098000060800060003400803001700020006060000280000419005000080079

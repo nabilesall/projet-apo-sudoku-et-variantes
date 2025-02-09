@@ -56,7 +56,7 @@ class SudokuTest {
 
     @Test
     void testImportGridFromFileThrowsExceptionOnInvalidSize() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> sudoku4x4.importGridFromFile("src/assets/good.txt"));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> sudoku4x4.importGridFromFile("src/assets/9x9.txt"));
         assertTrue(exception.getMessage().contains("Erreur : la grille doit être de taille 4x4"));
     }
 
