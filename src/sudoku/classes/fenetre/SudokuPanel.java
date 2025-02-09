@@ -2,6 +2,8 @@ package sudoku.classes.fenetre;
 
 import sudoku.classes.models.Sudoku;
 import sudoku.classes.models.SudokuResolver;
+import sudoku.enums.SudokuSize;
+import sudoku.enums.SudokuSymbols;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,28 +27,37 @@ public class SudokuPanel {
     JButton uploadButton = new JButton("Uploader un fichier");
 
     public SudokuPanel() {
-        // Initialisation des tailles de Sudoku
-        String[] sudokuSizes = {"4x4", "9x9", "16x16"};
-        String[] sudokuSymbols = {"Chiffres", "Lettres"};
 
-        // Ajout des tailles dans le JComboBox avec "4x4" sélectionné par défaut
-        sizeCombobox = new JComboBox<>(sudokuSizes);
-        sizeCombobox.setSelectedItem("4x4");
+        sizeCombobox = new JComboBox<>();
+        for (SudokuSize size : SudokuSize.values()) {
+            sizeCombobox.addItem(size.getLabel());
+        }
+        sizeCombobox.setSelectedItem(SudokuSize.SMALL.getLabel()); // 9x9 par défaut
+
         sizeCombobox.addActionListener(e -> {
             createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
-            String symbols = (gridSize((String) sizeCombobox.getSelectedItem()) == 16) ? "123456789ABCDEFG" : symbols((String) symbolsCombobox.getSelectedItem(), gridSize((String) sizeCombobox.getSelectedItem()));
-            sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols);
+            SudokuSize selectedSize = SudokuSize.fromLabel((String) sizeCombobox.getSelectedItem());
+            String symbols = (selectedSize == SudokuSize.LARGE)
+                    ? SudokuSymbols.HEXADECIMAL.getSymbols(selectedSize.getSize())
+                    : SudokuSymbols.fromLabel((String) symbolsCombobox.getSelectedItem()).getSymbols(selectedSize.getSize());
+            sudoku = new Sudoku(selectedSize.getSize(), symbols);
         });
 
-        // Ajout des symboles dans le JComboBox avec "Chiffres" sélectionné par défaut
-        symbolsCombobox = new JComboBox<>(sudokuSymbols);
-        symbolsCombobox.setSelectedItem("Chiffres");
+        symbolsCombobox = new JComboBox<>();
+        for (SudokuSymbols symbolSet : SudokuSymbols.values()) {
+            // pas d'affichage de Hexadécimal
+            if (symbolSet.getLabel().equals("Hexadécimal")) continue;
+            symbolsCombobox.addItem(symbolSet.getLabel());
+        }
+        symbolsCombobox.setSelectedItem(SudokuSymbols.DIGITS.getLabel()); // Chiffres par défaut
+
         symbolsCombobox.addActionListener(e -> {
-//            String symbols = (String) symbolsCombobox.getSelectedItem();
-//            sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols.equals("Chiffres") ? "123456789" : "ABCDEFGHIJKL");
             createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
-            String symbols = (gridSize((String) sizeCombobox.getSelectedItem()) == 16) ? "123456789ABCDEFG" : symbols((String) symbolsCombobox.getSelectedItem(), gridSize((String) sizeCombobox.getSelectedItem()));
-            sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols);
+            SudokuSize selectedSize = SudokuSize.fromLabel((String) sizeCombobox.getSelectedItem());
+            String symbols = (selectedSize == SudokuSize.LARGE)
+                    ? SudokuSymbols.HEXADECIMAL.getSymbols(selectedSize.getSize())
+                    : SudokuSymbols.fromLabel((String) symbolsCombobox.getSelectedItem()).getSymbols(selectedSize.getSize());
+            sudoku = new Sudoku(selectedSize.getSize(), symbols);
         });
 
         // Étiquette de statut
@@ -55,8 +66,11 @@ public class SudokuPanel {
         statusLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         // Initialisation de la grille de Sudoku (par défaut 9x9)
-        String symbols = (gridSize((String) sizeCombobox.getSelectedItem()) == 16) ? "123456789ABCDEFG" : symbols((String) symbolsCombobox.getSelectedItem(), gridSize((String) sizeCombobox.getSelectedItem()));
-        sudoku = new Sudoku(gridSize((String) sizeCombobox.getSelectedItem()), symbols);
+        SudokuSize selectedSize = SudokuSize.fromLabel((String) sizeCombobox.getSelectedItem());
+        String symbols = (selectedSize == SudokuSize.LARGE)
+                ? SudokuSymbols.HEXADECIMAL.getSymbols(selectedSize.getSize())
+                : SudokuSymbols.fromLabel((String) symbolsCombobox.getSelectedItem()).getSymbols(selectedSize.getSize());
+        sudoku = new Sudoku(selectedSize.getSize(), symbols);
 
         // Configuration de l'interface utilisateur
         setupUI();
@@ -112,23 +126,14 @@ public class SudokuPanel {
         createEmptyGrid((String) sizeCombobox.getSelectedItem(), solveButton);
     }
 
-    private int gridSize(String size) {
-        return switch (size) {
-            case "4x4" -> 4;
-            case "9x9" -> 9;
-            case "16x16" -> 16;
-            default -> 9;
-        };
+    private int gridSize(String sizeLabel) {
+        return SudokuSize.fromLabel(sizeLabel).getSize();
     }
 
-    private String symbols(String symbols, int size) {
-        System.out.println("Symbols: " + symbols);
-        return switch (symbols) {
-            case "Chiffres" -> "123456789".substring(0, size);
-            case "Lettres" -> "ABCDEFGHIJKL".substring(0, size);
-            default -> "123456789".substring(0, size);
-        };
+    private String symbols(String label, int size) {
+        return SudokuSymbols.fromLabel(label).getSymbols(size);
     }
+
 
     private void createEmptyGrid(String size, JButton solveButton) {
         solveButton.setEnabled(false);
@@ -249,7 +254,7 @@ public class SudokuPanel {
         if (resolver.solve(choice + 1)) { // Le choix correspond aux options (1, 2, 3)
             populateGridFromSudoku();
             setStatusLabel("Sudoku résolu avec succès !");
-//            JOptionPane.showMessageDialog(null, "Sudoku résolu avec succès !");
+            // JOptionPane.showMessageDialog(null, "Sudoku résolu avec succès !");
         } else {
             setStatusLabel("Impossible de résoudre le Sudoku.");
         }

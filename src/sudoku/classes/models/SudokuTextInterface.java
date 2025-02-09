@@ -1,5 +1,8 @@
 package sudoku.classes.models;
 
+import sudoku.enums.SudokuSize;
+import sudoku.enums.SudokuSymbols;
+
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -16,14 +19,17 @@ public class SudokuTextInterface {
         System.out.println("Vous avez choisi l'interface textuelle.");
 
         // Demander la taille du Sudoku
-        int size = chooseGridSize();
-        if (size == -1) {
+        SudokuSize selectedSize = chooseGridSize();
+        if (selectedSize == null) {
             System.out.println("Choix invalide. Veuillez redémarrer le programme.");
             return;
         }
+        int size = selectedSize.getSize(); // Récupère la taille en int
 
         // demander les symobols
         String symbols = (size == 16) ? "123456789ABCDEFG" : chooseSymbols(size);
+
+        System.out.println("symbols : " + symbols);
 
         sudoku = new Sudoku(size, symbols); // Initialisation de la grille avec la taille choisie
 
@@ -98,21 +104,16 @@ public class SudokuTextInterface {
         sudoku.printGrid();
     }
 
-    private int chooseGridSize() {
+    private SudokuSize chooseGridSize() {
         System.out.println("Veuillez choisir la taille du Sudoku :");
-        System.out.println("1. 4x4");
-        System.out.println("2. 9x9");
-        System.out.println("3. 16x16");
+        for (SudokuSize size : SudokuSize.values()) {
+            System.out.println(size.ordinal() + 1 + ". " + size.getLabel());
+        }
 
         int choiceSize = scanner.nextInt();
         scanner.nextLine();
 
-        return switch (choiceSize) {
-            case 1 -> 4;
-            case 2 -> 9;
-            case 3 -> 16;
-            default -> -1;
-        };
+        return SudokuSize.fromChoice(choiceSize);
     }
 
     private String chooseSymbols(int size) {
@@ -130,5 +131,7 @@ public class SudokuTextInterface {
 //            case 3 -> "🐶🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🐶".substring(0, size);
             default -> "123456789".substring(0, size);
         };
+
+
     }
 }
